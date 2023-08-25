@@ -36,7 +36,7 @@
 	$(function() {
 		// 인증메일 발송
 		$("#authMailBtn").on("click", () => {
-			let email = $("#email").val().trim();
+			let email = $("#authEmail").val().trim();
 			if(validateEmail(email)) {
 				$.ajax({
 					type: 'get'
@@ -51,6 +51,7 @@
 							// 타이머 3분, 인증번호 입력칸, 인증버튼 추가
 							// 인증완료시 mailModal.hide() , joinModal.show()
 							startTimer();
+							$("#authEmail").attr('readonly');
 							$("#authRow").removeClass('d-none');
 							$("#authMailBtn").addClass('d-none');
 						} else {
@@ -63,13 +64,13 @@
 				});
 			} else {
 				alert("메일 주소를 정확히 입력하세요."); // Modal창으로 변경
-				$("#email").val('').focus();
+				$("#authEmail").val('').focus();
 			}
 		});
 		
 		// 인증
 		$("#authMailCheck").on("click", () => {
-			let email = $("#email").val().trim();
+			let email = $("#authEmail").val().trim();
 			let authCode = $("#authCode").val().trim();
 			$.ajax({
 				type: 'get'
@@ -81,11 +82,11 @@
 				}
 				, success: result => {
 					if(result == 'true') {
-						alert('인증 완료');
-// 						let mailModal = new bootstrap.Modal($("#mailCheck"), { keyboard: false });
-// 						let joinModal = new bootstrap.Modal($("#joinForm"), { keyboard: false });
-// 						mailModal.hide();
-// 						joinModal.show();
+// 						alert('인증 완료');
+						$("#mailCheck").modal('hide');
+						$('.modal-backdrop').remove();
+						$("#joinForm").modal('show');
+						$("#email").val(email);
 					} else {
 						alert('인증 실패');
 					}
@@ -98,16 +99,16 @@
 	});
 </script>
 <main class="container">
-	<div class="row">
-		<div class="col-2 pointer" data-bs-toggle="modal" data-bs-target="#mailCheck">
+	<div class="row justify-content-end">
+		<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#mailCheck">
 			회원가입
 		</div>
-		<div class="col-2">
+		<div class="col-1">
 			로그인
 		</div>
-		<div class="col-2">
-			알람
-		</div>
+<!-- 		<div class="col-1"> -->
+<!-- 			알람 -->
+<!-- 		</div> -->
 	</div>
 </main>
 
@@ -124,7 +125,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-floating mb-3">
-								<input type="email" class="form-control" id="email" required><label for="email">Email address</label>
+								<input type="email" class="form-control" id="authEmail"><label for="authEmail">Email address</label>
 							</div>
 						</div>
 					</div>
@@ -155,20 +156,22 @@
 
 <!-- Modal - join -->
 <div class="modal fade" id="joinForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="joinForm" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="joinForm">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Understood</button>
-      </div>
-    </div>
-  </div>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="joinForm">회원 가입</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      		</div>
+      		<div class="modal-body">
+				<div class="form-floating mb-3">
+					<input type="email" class="form-control" id="email" readonly><label for="email">Email address</label>
+				</div>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        		<button type="button" class="btn btn-primary">Understood</button>
+      		</div>
+    	</div>
+  	</div>
 </div>
 
