@@ -88,7 +88,16 @@
 		    <scope>provided</scope>
 		</dependency>
 				
-        <!-- 파일 처리(업로드 등) 라이브러리(commons-fileupload, commons-io) -->
+		<!-- 6. 암호화에 사용될 BCryptPasswordEncoder 가 포함된 Spring-Security-Web 라이브러리 -->
+		<!-- 주의! JDK 11 기준 5.x.x 버전까지만 사용 가능 -->
+		<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-web</artifactId>
+		    <version>5.8.3</version>
+		</dependency>
+				
+        <!-- 7. 파일 처리(업로드 등) 라이브러리(commons-fileupload, commons-io) -->
         <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
         <dependency>
             <groupId>commons-fileupload</groupId>

@@ -42,8 +42,8 @@ public class MemberController {
 	@ResponseBody
 	@GetMapping("AuthMailCheck")
 	public String authMailCheck(
-			@RequestParam() String email
-			, @RequestParam() String authCode) {
+			@RequestParam String email
+			, @RequestParam String authCode) {
 		
 		String storedVerificationCode = redis.getEmailVerificationCode(email);
 		if (storedVerificationCode != null && !storedVerificationCode.equals("null")) {
@@ -58,5 +58,13 @@ public class MemberController {
 //		    logger.info("인증 코드를 찾을 수 없음");
 		    return "false";
 		}
+	}
+	
+	@ResponseBody
+	@GetMapping("idDuplicateCheck")
+	public String idDuplicateCheck(
+			@RequestParam String email) {
+		
+		return service.idDuplicateCheck(email);
 	}
 }
