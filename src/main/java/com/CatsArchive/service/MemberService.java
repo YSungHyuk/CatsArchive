@@ -24,4 +24,12 @@ public class MemberService {
 		}
 	}
 
+	public int joinMember(Map<String, Object> map) {
+		return mapper.insertMember(map);
+	}
+
+	public String getPasswd(Map<String, Object> map) {
+		return mapper.selectPasswd(map);
+	}
+
 }

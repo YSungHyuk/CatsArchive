@@ -9,4 +9,8 @@ public interface MemberMapper {
 
 	Map<String, Object> selectEmail(String email);
 
+	int insertMember(Map<String, Object> map);
+
+	String selectPasswd(Map<String, Object> map);
+
 }

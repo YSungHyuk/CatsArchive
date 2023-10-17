@@ -9,4 +9,24 @@
 		where
 			mem_id = #{email}
 	</select>
+	<insert id="insertMember" parameterType="map">
+		insert into
+			mem_info
+		values (
+			null
+			, #{email}
+			, #{name}
+			, #{nickname}
+			, #{securePasswd}
+			, now()
+		)
+	</insert>
+	<select id="selectPasswd" parameterType="map">
+		select
+			mem_passwd
+		from
+			mem_info
+		where
+			mem_id = #{email}
+	</select>
 </mapper>

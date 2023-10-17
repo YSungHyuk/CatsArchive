@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <link href="${pageContext.request.contextPath }/resources/css/etc/bootstrap.min.css" rel="stylesheet">
 <link href="${pageContext.request.contextPath }/resources/css/common.css" rel="stylesheet">
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/etc/bootstrap.min.js"></script>
@@ -156,19 +158,86 @@
 			}
 		});
 		
+		// 회원가입
+		$("#join").on("click",() => {
+			$.ajax({
+				type: 'post'
+				, url: 'JoinMemberShip'
+				, dataType: 'text'
+				, data: {
+					'email': $("#email").val()
+					,'passwd': $("#passwd").val()
+					,'name': $("#name").val()
+					,'nickname': $("#nickname").val()
+				}
+				, success: result => {
+					if(result == 'true') {
+						alert('가입 완료');
+						location.href="./";
+					} else {
+						alert('가입 실패');
+					}
+				}
+				, error: () => {
+					console.log("error");
+				}
+			});
+		});
+		
+		$("#login").on("click",() => {
+			$.ajax({
+				type: 'get'
+				, url: 'LoginMember'
+				, dataType: 'text'
+				, data: {
+					'email': $("#loginEmail").val()
+					, 'passwd': $("#loginPasswd").val()
+					, 'rememberId': $("#rememberId").is(':checked')
+				}
+				, success: result => {
+					if(result == 'true') {
+						location.href="./";
+					} else {
+						alert('로그인 실패');
+					}
+				}
+				, error: () => {
+					console.log("error");
+				}
+			});
+		});
+		
+		$("#logout").on("click",() => {
+			let isLogout = confirm("로그아웃 하시겠습니까?");
+			
+			if(isLogout) {
+				location.href="MemberLogout";
+			}
+		})
+		
+		
 	});
 </script>
 <main class="container">
 	<div class="row justify-content-end">
-		<div class="col-1">
-			로그인
-		</div>
-		<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#mailCheck">
-			회원가입
-		</div>
 <!-- 		<div class="col-1"> -->
 <!-- 			알람 -->
 <!-- 		</div> -->
+
+		<c:choose>
+			<c:when test="${empty sessionScope.sId }">
+				<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#loginForm">
+					로그인
+				</div>
+				<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#mailCheck">
+					회원가입
+				</div>
+			</c:when>
+			<c:otherwise>
+				<div class="col-2 pointer">${sessionScope.sId } 님</div>
+				<div class="col-1 pointer" id="logout">Logout</div>
+			</c:otherwise>
+		</c:choose>
 	</div>
 </main>
 
@@ -269,7 +338,42 @@
       		</div>
       		<div class="modal-footer">
         		<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        		<button type="button" class="btn btn-primary">회원가입</button>
+        		<button type="button" id="join" class="btn btn-primary">회원가입</button>
+      		</div>
+    	</div>
+  	</div>
+</div>
+
+<!-- Modal - login -->
+<div class="modal fade" id="loginForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginForm" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="loginForm">로그인</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      		</div>
+      		<div class="modal-body container">
+      			<div class="row">
+					<div class="form-floating mb-3 col">
+						<input type="email" class="form-control" id="loginEmail" value="${cookie.REMEMBER_ID.value }" required="required"><label for="email">Email address</label>
+					</div>
+      			</div>
+      			<div class="row">
+					<div class="form-floating mb-3 col">
+						<input type="password" class="form-control" id="loginPasswd" required="required"><label for="passwd">Password</label>
+					</div>
+      			</div>
+      			<div class="row">
+	      			<div class="form-check form-check mb-3 col">
+						<input class="form-check-input" type="checkbox" id="rememberId" 
+							<c:if test="${not empty cookie.REMEMBER_ID.value }">checked</c:if> 
+						><label class="form-check-label" for="rememberId">REMEMBER ID</label>
+					</div>
+      			</div>
+
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" id="login" class="btn btn-primary">로그인</button>
       		</div>
     	</div>
   	</div>
