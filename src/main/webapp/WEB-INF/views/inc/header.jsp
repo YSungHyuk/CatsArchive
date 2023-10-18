@@ -5,6 +5,64 @@
 <link href="${pageContext.request.contextPath }/resources/css/common.css" rel="stylesheet">
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/etc/bootstrap.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath }/resources/js/etc/jquery-3.7.0.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script>
+let socket = null;
+
+$(function () {
+	let id = "";
+	id = '${sId}';
+    if (id != "") {
+        connectWs();
+    }
+});
+
+function connectWs() {
+    let wsUrl = "<c:url value='/alram'/>"; // 웹소켓 엔드포인트 URL 설정
+    const maxRetries = 5;
+    let currentRetries = 0;
+
+    function initWs() {
+        const ws = new SockJS(wsUrl);
+        socket = ws;
+
+        ws.onopen = function () {
+            console.log("open");
+            currentRetries = 0;
+        };
+
+        ws.onmessage = function (event) {
+            alert(event.data);
+            let $socketAlert = $('div#socketAlert');
+            $socketAlert.html(event.data);
+            $socketAlert.css('display', 'block');
+
+            setTimeout(function () {
+                $socketAlert.css('display', 'none');
+            }, 5000);
+        };
+
+        ws.onclose = function () {
+            console.log('close');
+            if (currentRetries < maxRetries) {
+                setTimeout(() => {
+                    console.log('Retrying WebSocket...');
+                    currentRetries++;
+                    initWs();
+                }, 2000 * (currentRetries ** 2));
+            } else {
+                console.error('WebSocket reconnection attempts exceeded.');
+            }
+        };
+
+        ws.onerror = function (error) {
+            console.error('WebSocket error:', error);
+        };
+    }
+
+    initWs();
+};
+</script>
 <script>
 	// 메일 유효성
 	function validateEmail(email) {
@@ -220,10 +278,6 @@
 </script>
 <main class="container">
 	<div class="row justify-content-end">
-<!-- 		<div class="col-1"> -->
-<!-- 			알람 -->
-<!-- 		</div> -->
-
 		<c:choose>
 			<c:when test="${empty sessionScope.sId }">
 				<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#loginForm">
@@ -232,10 +286,16 @@
 				<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#mailCheck">
 					회원가입
 				</div>
+				<div class="col-1 pointer">
+					알람
+				</div>
 			</c:when>
 			<c:otherwise>
 				<div class="col-2 pointer">${sessionScope.sId } 님</div>
 				<div class="col-1 pointer" id="logout">Logout</div>
+				<div class="col-1 pointer">
+					알람
+				</div>
 			</c:otherwise>
 		</c:choose>
 	</div>
@@ -345,7 +405,7 @@
 </div>
 
 <!-- Modal - login -->
-<div class="modal fade" id="loginForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginForm" aria-hidden="true">
+<div class="modal fade" id="loginForm" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loginForm" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
