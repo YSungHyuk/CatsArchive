@@ -166,6 +166,8 @@ public class EchoHandler extends TextWebSocketHandler {
 		String mid = "";
 		if(loginUser == null) {
 			mid = session.getId();
+		} else {
+			mid = loginUser;
 		}
 		return mid;
 		

@@ -286,9 +286,6 @@ function connectWs() {
 				<div class="col-1 pointer" data-bs-toggle="modal" data-bs-target="#mailCheck">
 					회원가입
 				</div>
-				<div class="col-1 pointer">
-					알람
-				</div>
 			</c:when>
 			<c:otherwise>
 				<div class="col-2 pointer">${sessionScope.sId } 님</div>
